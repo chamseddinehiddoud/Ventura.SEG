@@ -23,7 +23,7 @@ jobs:
   analyze:
     name: Analyze (Python)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     strategy:
       fail-fast: false
@@ -40,8 +40,9 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-          # Use both security-extended and security-and-quality for broader coverage
-          queries: security-extended,security-and-quality
+          # Default high-signal suites + custom Ventura.SEG queries
+          queries: +security-extended,security-and-quality,./codeql/queries
+          config-file: ./codeql/codeql-config.yml
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
