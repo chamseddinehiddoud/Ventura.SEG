@@ -12,21 +12,19 @@
 
 import python
 
-from DataFlow::Node n
+from AstNode node
 where
-  // IsolationLevel.NONE
   exists(Attribute a |
-    a = n.asExpr() and
     a.getName() = "NONE" and
-    a.getObject().(Name).getId().regexpMatch("(?i).*isolation.*level.*|IsolationLevel")
+    a.getObject().(Name).getId().regexpMatch("(?i).*isolation.*level.*|IsolationLevel") and
+    node = a
   )
   or
-  // network_disabled=False or read_only_root=False in constructor-like calls
   exists(Keyword k |
-    k = n.asExpr().getParent() and
     (
       (k.getArg() = "network_disabled" and k.getValue().(Name).getId() = "False") or
       (k.getArg() = "read_only_root" and k.getValue().(Name).getId() = "False")
-    )
+    ) and
+    node = k
   )
-select n, "Potential sandbox isolation bypass detected."
+select node, "Potential sandbox isolation bypass detected."
