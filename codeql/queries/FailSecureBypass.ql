@@ -12,25 +12,22 @@
 
 import python
 
-from DataFlow::Node n
+from AstNode node
 where
-  // String literal "allow" assigned in contexts related to default_action
-  exists(StringLiteral s |
-    s = n.asExpr() and
+  exists(Assign a, StringLiteral s |
+    a.getValue() = s and
     s.getText().regexpMatch("(?i)^allow$") and
-    exists(Assign a |
-      a.getAValue() = s and
-      (
-        a.getATarget().(Name).getId().regexpMatch("(?i).*default.*action.*") or
-        a.getATarget().(Attribute).getName().regexpMatch("(?i).*default.*action.*")
-      )
-    )
+    (
+      a.getATarget().(Name).getId().regexpMatch("(?i).*default.*action.*") or
+      a.getATarget().(Attribute).getName().regexpMatch("(?i).*default.*action.*")
+    ) and
+    node = a
   )
   or
-  // Keyword argument default_action="allow"
-  exists(Keyword k |
-    k = n.asExpr().getParent() and
+  exists(Keyword k, StringLiteral s |
     k.getArg() = "default_action" and
-    k.getValue().(StringLiteral).getText().regexpMatch("(?i)^allow$")
+    k.getValue() = s and
+    s.getText().regexpMatch("(?i)^allow$") and
+    node = k
   )
-select n, "Potential fail-secure bypass: default_action set to 'allow'."
+select node, "Potential fail-secure bypass: default_action set to 'allow'."

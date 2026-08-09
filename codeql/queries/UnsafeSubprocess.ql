@@ -15,6 +15,5 @@ import semmle.python.security.dataflow.CommandInjectionQuery
 
 from CommandInjectionFlow::PathNode source, CommandInjectionFlow::PathNode sink
 where CommandInjectionFlow::flowPath(source, sink)
-select sink.getNode(), source, sink,
-  "This command execution depends on a $@.", source.getNode(),
-  "user-controlled value"
+select sink.getNode(),
+  "User-controlled data reaches a subprocess command execution path without a guaranteed shell-free or allowlisted command contract."
