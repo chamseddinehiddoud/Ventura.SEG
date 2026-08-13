@@ -1,0 +1,101 @@
+[project]
+name = "ventura-seg"
+version = "1.0.0"
+description = "Ventura.SEG - Camada de segurança para sistemas multiagentes de IA"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Ventura Labs AI", email = "dev@venturalabs.ai" },
+    { name = "Wemerson Mota de Oliveira" }
+]
+keywords = ["ai", "security", "agents", "dlp", "sandbox", "audit"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries",
+]
+
+dependencies = [
+    "pyyaml>=6.0.3",
+]
+
+[project.optional-dependencies]
+vault = [
+    "hvac>=2.4.0",  # HashiCorp Vault client
+]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.6.0",
+    "mypy>=1.11.0",
+    "types-PyYAML>=6.0.0",
+]
+all = [
+    "hvac>=2.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/venturalabs-ai/ventura.SEG"
+Repository = "https://github.com/venturalabs-ai/ventura.SEG"
+Issues = "https://github.com/venturalabs-ai/ventura.SEG/issues"
+Documentation = "https://github.com/venturalabs-ai/ventura.SEG/blob/main/README.md"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "W",   # pycodestyle warnings
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "S",   # flake8-bandit (security)
+    "A",   # flake8-builtins
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+]
+ignore = ["S101"]  # Allow asserts in tests
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "S105", "S106"]  # Allow asserts and hardcoded passwords in tests
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short --cov=ventura_seg --cov-report=term-missing"
+asyncio_mode = "auto"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["ventura_seg"]
+omit = ["tests/*", "*/migrations/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
